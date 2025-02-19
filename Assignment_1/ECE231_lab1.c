@@ -19,19 +19,46 @@ void calculate_mean(int buf[], struct timespec *timestamp, int *avg){
 }
 
 
+int check_duplicate(int buf[], int size, int value){
+
+    for (int i=0;i<size;i++){
+        if (buf[i]==value){
+            return 1;
+        }
+        else {
+            return 0;
+        }
+    }
+}
+
 
 int main(){
     struct timespec timestamp;
 
-    for(int j=0;j<2;j++){
+    for(int j=0; j<2; j++){
 
         int avg;
+        int input;
+        int buffer[BUFFERSIZE];
+        int index=0; 
 
-        int buffer[BUFFERSIZE]; 
-
-        for(int i=0; i<BUFFERSIZE;i++){ //loop for input
+        while(index<BUFFERSIZE){ //loop for input
             printf("Enter a number between 0 and 9000 (%d): ", i+1);
-            scanf("%d", &buffer[i]);
+            scanf("%d", &input);
+
+            if (input <0 || input > 9000){
+                printf("Value out of range. Re-enter a value in range.\n");
+                continue;
+            }
+            
+            if (check_duplicate(buffer, i, input)==1){
+                printf("Duplicates not allowed. Re-enter a unique value. \n");
+                continue;
+            }
+
+            buffer[index] = input;
+        
+            index += 1;
         } 
 
         calculate_mean(buffer, &timestamp, &avg);
