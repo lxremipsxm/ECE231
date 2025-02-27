@@ -42,7 +42,7 @@ int main(){
 
     /*Writing to file*/
     duration = end.tv_nsec - start.tv_nsec;
-    fprintf(time_diff, "Duration(ns): %ld", duration);
+    fprintf(time_diff, "%ld \n", duration);
 
     /*Closing files*/
     fclose(time_diff);
