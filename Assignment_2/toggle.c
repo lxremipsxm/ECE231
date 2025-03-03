@@ -15,7 +15,7 @@ int main(){
     FILE *time_diff = fopen("time_diff_file.txt", "a");
 
     if (led_file == NULL || time_diff == NULL){
-        printf("Error opening file");
+        printf("Error opening file"); //in case files falter
     }
 
 
@@ -29,7 +29,7 @@ int main(){
 
         char value;
         fread(&value, 1, 1, led_file);
-        fseek(led_file, 0, SEEK_SET);
+        fseek(led_file, 0, SEEK_SET); //set file pointer to start
 
         if (value == '0'){
             fwrite("1", sizeof(char), 1, led_file);
@@ -37,7 +37,7 @@ int main(){
         else {
             fwrite("0", sizeof(char), 1, led_file);
         }
-        fseek(led_file, 0, SEEK_SET);
+        fseek(led_file, 0, SEEK_SET); //reset file pointer
 
         clock_gettime(CLOCK_MONOTONIC, &end); //store at poitner for end timestamp
 
