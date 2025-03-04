@@ -153,8 +153,6 @@ int main(){
         fclose(fp1);
         fclose(fp2);
 
-        printf("State (08): %d | State (09): %d \n", state1, state2);
-
 
         if(state1 == 1 && state2 == 0){
             char period[32] = "10000000";
@@ -162,11 +160,14 @@ int main(){
 
             stop_pwm(buzz_pin, pwmchip, channel);
 
+            printf("State (p8_08): %d | State (p8_09): %d \n", state1, state2);
+
             start_pwm(buzz_pin, pwmchip, channel, period, d_cycle);
 
             sleep(5);
 
             stop_pwm(buzz_pin, pwmchip, channel);
+            
         }
 
         if(state1 == 0 && state2 == 1){
@@ -174,6 +175,8 @@ int main(){
             char d_cycle[32] = "70000000";
 
             stop_pwm(buzz_pin, pwmchip, channel);
+
+            printf("State (p8_08): %d | State (p8_09): %d \n", state1, state2);
 
             start_pwm(buzz_pin, pwmchip, channel, period, d_cycle);
 
