@@ -102,69 +102,88 @@ void stop_pwm(char* pin_num, char* pwmchip, char* channel){
 
 int main(){  
 
+    /*Buzzer Definitions*/
     char buzz_pin[32] = "P9_16";
     char pwmchip[32] = "pwmchip4";
     char channel[32] = "1";
-    char period[32] = "1000000000";
-    char d_cycle[32] = "500000000";
 
-    stop_pwm(buzz_pin, pwmchip, channel);
-    start_pwm(buzz_pin, pwmchip, channel, period, d_cycle);
+    /*Button definitions*/
+    char b1_pin[32] = "P8_08";
+    int b1_num = 67;
+
+    char b2_pin[32] = "P8_09";
+    int b2_num = 69;
+
+    config_gpio_input(b1_num, b1_pin);
+    config_gpio_input(b2_num, b2_pin);
+
+    
+    /*For reading from gpio files*/
+
+    char valuePath1[40];
+    sprintf(valuePath1, "/sys/class/gpio/gpio%d/value", b1_num);
+
+    char valuePath2[40];
+    sprintf(valuePath2, "/sys/class/gpio/gpio%d/value", b2_num);
+
 
     sleep(1);
 
-    stop_pwm(buzz_pin, pwmchip, channel);
 
-
-    // char b1_pin[32] = "P8_08";
-    // int b1_num = 67;
-
-
-    // char b2_pin[32] = "P8_09";
-    // int b2_num = 69;
-
-    // config_gpio_input(b1_num, b1_pin);
-    // config_gpio_input(b2_num, b2_pin);
-
-    // char valuePath1[40];
-    // sprintf(valuePath1, "/sys/class/gpio/gpio%d/value", b1_num);
-
-    // char valuePath2[40];
-    // sprintf(valuePath2, "/sys/class/gpio/gpio%d/value", b2_num);
-
-
-    // sleep(1);
-
-    // long count = 0;
-    // int state1;
-    // int state2;
-    // FILE *fp1;
-    // FILE *fp2;
+    int state1;
+    int state2;
+    FILE *fp1;
+    FILE *fp2; //open files defined earlier
     
 
-    // while(count < 10){
+    /*Polling*/
+    while(1){
 
-    //     fp1 = fopen(valuePath1, "r");
-    //     fp2 = fopen(valuePath2, "r");
+        fp1 = fopen(valuePath1, "r");
+        fp2 = fopen(valuePath2, "r");
 
-    //     if (fp1 == NULL || fp2 == NULL) {
-    //         printf("File couldn't be opened");
-    //         exit(-1);
-    //     }
+        if (fp1 == NULL || fp2 == NULL) {
+            printf("File couldn't be opened");
+            exit(-1);
+        }
         
-    //     fscanf(fp1, "%d", &state1);
-    //     fscanf(fp2, "%d", &state2);
+        fscanf(fp1, "%d", &state1);
+        fscanf(fp2, "%d", &state2);
 
-    //     fclose(fp1);
-    //     fclose(fp2);
+        fclose(fp1);
+        fclose(fp2);
 
-    //     if(state1 == 0){
-    //         count++;
-    //     }
+        printf("State (08): %d | State (09): %d \n", state1, state2);
 
-    //     printf("State (08): %d | State (09): %d \n", state1, state2);
-    //     sleep(1);
-    // }
+
+        if(state1 == 1 && state2 == 0){
+            char period[32] = "10000000";
+            char d_cycle[32] = "6000000";
+
+            stop_pwm(buzz_pin, pwmchip, channel);
+
+            start_pwm(buzz_pin, pwmchip, channel, period, d_cycle);
+
+            sleep(5);
+
+            stop_pwm(buzz_pin, pwmchip, channel);
+        }
+
+        if(state1 == 0 && state2 == 1){
+            char period[32] = "100000000";
+            char d_cycle[32] = "70000000";
+
+            stop_pwm(buzz_pin, pwmchip, channel);
+
+            start_pwm(buzz_pin, pwmchip, channel, period, d_cycle);
+
+            sleep(5);
+
+            stop_pwm(buzz_pin, pwmchip, channel);
+
+        }
+
+    }
 
     return 0;
 }
