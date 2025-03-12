@@ -4,7 +4,7 @@
 #include <string.h>
 #include <signal.h>
 #include <sys/epoll.h>
-
+#include <pthread.h>
 
 
 void config_pin(char *pin_num, char *mode){
@@ -18,6 +18,7 @@ void config_pin(char *pin_num, char *mode){
         }
     }
 }
+
 
 void config_gpio_input(int gpio, char *pin_num){
     //configures gpio as an input pin
@@ -46,7 +47,7 @@ void config_interrupt(int gpio_num, char *pin_num){
 
 }
 
-void capture_interrupt(int gpio_num, long timestamps[]) {
+void capture_interrupt(int gpio_num, long *timestamps[]) {
 
     /*Setup section*/
 
@@ -75,9 +76,9 @@ void capture_interrupt(int gpio_num, long timestamps[]) {
     for(int i=0; i < 5; i++){
 
         capture_interrupt = epoll_wait(epfd, &ev_wait, 1, -1);
-        clock_gettime(CLOCK_MONOTONIC_RAW, &tm);
+        long time_s = clock_gettime(CLOCK_MONOTONIC_RAW, &tm);
         
-        &timestamps[i] = 
+        &timestamps[i] = time_s;
     }
 
     close(epfd);
