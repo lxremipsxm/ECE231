@@ -7,7 +7,7 @@
 void config_pin(char* pin_num, char* mode){
 
     if(!vfork()){
-        int ret = execl("/usr/bin/config-pin", "config-pin", pin_num, mode, NULL); //child process
+        int ret = execl("/usr/bin/config-pin", "config-pin", pin_num, mode, NULL);
 
         if (ret < 0){
             printf("Failed to configure pin in PWM.\n");
@@ -154,20 +154,19 @@ int main(){
         fclose(fp2);
 
 
+
         if(state1 == 1 && state2 == 0){
             char period[32] = "10000000";
             char d_cycle[32] = "6000000";
 
             stop_pwm(buzz_pin, pwmchip, channel);
 
-            printf("State (p8_08): %d | State (p8_09): %d \n", state1, state2);
-
+	    printf("State (p8_08): %d | State (p8_09): %d \n", state1, state2);
             start_pwm(buzz_pin, pwmchip, channel, period, d_cycle);
 
             sleep(5);
 
             stop_pwm(buzz_pin, pwmchip, channel);
-            
         }
 
         if(state1 == 0 && state2 == 1){
@@ -176,8 +175,7 @@ int main(){
 
             stop_pwm(buzz_pin, pwmchip, channel);
 
-            printf("State (p8_08): %d | State (p8_09): %d \n", state1, state2);
-
+	    printf("State (p8_08): %d | State (p8_09): %d \n", state1, state2);
             start_pwm(buzz_pin, pwmchip, channel, period, d_cycle);
 
             sleep(5);
