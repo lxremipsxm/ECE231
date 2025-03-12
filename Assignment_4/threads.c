@@ -47,7 +47,10 @@ void config_interrupt(int gpio_num, char *pin_num){
 
 }
 
-void capture_interrupt(int gpio_num, long *timestamps[]) {
+void *capture_interrupt(void *var) {
+
+    int gpio_num = 69;
+    long *buffer = (long *) var;
 
     /*Setup section*/
 
@@ -68,7 +71,6 @@ void capture_interrupt(int gpio_num, long *timestamps[]) {
 
 
     /*Capture section*/
-
     int capture_interrupt;
     struct epoll_event ev_wait;
     struct timespec tm;
@@ -76,13 +78,15 @@ void capture_interrupt(int gpio_num, long *timestamps[]) {
     for(int i=0; i < 5; i++){
 
         capture_interrupt = epoll_wait(epfd, &ev_wait, 1, -1);
-        long time_s = clock_gettime(CLOCK_MONOTONIC_RAW, &tm);
+        clock_gettime(CLOCK_MONOTONIC_RAW, &tm);
+
+        printf("Interrupt detected (%d)\n", i+1);
         
-        &timestamps[i] = time_s;
+        buffer[i] = tm.tv_sec;
     }
 
     close(epfd);
-    return 0;
+    return NULL;
 }
 
 
@@ -90,11 +94,22 @@ int main(){
 
     char gpio_in_num[32] = "P8_09";
     int gpio_in_pin = 69;
+    long buffer[5];
 
     config_interrupt(gpio_in_pin, gpio_in_num); //config p8-09 as gpio input
 
 
-    
+    /*Thread setup*/
+    pthread_t thread_id;
+
+    pthread_create(&thread_id, NULL, capture_interrupt, (void *)(&buffer)); //creates thread and runs threadfunction
+    pthread_join(thread_id, NULL); //joins thread with its id and threadfunction name
+
+    for (int j=0; j<5; j++){
+        printf("Timestamp %d: %ld", j, buffer[j]);
+    }
+
+    pthread_exit(0);
 
     return 0;
 }
