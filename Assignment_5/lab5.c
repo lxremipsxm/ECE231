@@ -16,6 +16,7 @@ int count = 0; //number of values in buffer
 int put = 0; //index to write to buffer
 int get = 0; //index to read to buffer
 
+pthread_mutex_t lock; //global mutex lock
 
 
 void config_pin(char *pin_num, char *mode){
@@ -61,6 +62,7 @@ void *input_thread(void *var){
     config_rising_interrupt(gpio_num, pin_num); //configure rising edge on gpio69
     char InterruptPath[40];
     sprintf(InterruptPath, "/sys/class/gpio/gpio%d/value", gpio_num);
+    int max = *((int*) var);
 
 
     /*Setup capture*/
@@ -82,11 +84,10 @@ void *input_thread(void *var){
     int capture;
     struct epoll_event ev_wait;
 
-    pthread_mutex_t lock;
 
     int num = 0; //indicates how many values have been passed into the buffer OVERALL
 
-    while (num <= 50){
+    while (num <= max){
         /*Critical Section begins*/
         pthread_mutex_lock(&lock);
 
@@ -96,11 +97,6 @@ void *input_thread(void *var){
         }
 
         capture = epoll_wait(epfd, &ev_wait, 1, -1);
-        if (capture != 0){
-            printf("Capture detected\n");
-            printf(evwait);
-        }
-
 
         clock_gettime(CLOCK_MONOTONIC, &buffer[put].timestamp);
         buffer[put].thread_id = pthread_self();
@@ -126,11 +122,10 @@ void *output_thread(void *var){
     FILE *fp;
     fp = fopen("Siddharth_Vasudevan_data.txt", "a"); //open file in append mode
 
-    pthread_mutex_t lock;
-
     int num = 0;
+    int max = *((int*) var);
 
-    while (num <= 50) {
+    while (num <= max) {
         /*Critical Section begins*/
         pthread_mutex_lock(&lock);
 
@@ -156,26 +151,34 @@ void *output_thread(void *var){
         
         pthread_mutex_unlock(&lock);
         /*Critical Section ends*/
-
-        if (num = 50){
-            break;
-        }
     }
 }
 
 
 int main() {
 
+    int num = 50;
+    printf("Initializing threads.\n");
+
+    if (pthread_mutex_init(&lock, NULL) != 0){
+        printf("Mutex not initialized\n");
+        return 1;
+    }
 
     pthread_t in;
     pthread_t out;
 
 
-    pthread_create(&in, NULL, input_thread, NULL);
-    pthread_create(&out, NULL, output_thread, NULL);
+    pthread_create(&in, NULL, input_thread, (void*)(&num));
+    pthread_create(&out, NULL, output_thread, (void*)(&num));
 
     pthread_join(in, NULL);
     pthread_join(out, NULL);
 
+    pthread_mutex_destroy(&lock);
+
+    printf("All threads have finished executing\n");
+
+    pthread_exit(0);
     return 0;
 }
