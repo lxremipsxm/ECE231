@@ -1,5 +1,7 @@
 /* 
 Siddharth Vasudevan, ECE231 SP25 Lab 8.1
+lab8_1.c
+4/10/2025
 
 Description: This code enables the ATmega to take input from three buttons and flash two leds
 in different permuations, while preventing simultaneous button presses.
