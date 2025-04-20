@@ -1,13 +1,3 @@
-/*
-Siddharth Vasudevan, ECE231 SP25 Lab 8.2
-lab8_2.c
-4/16/2025
-
-Description: Implements a digital thermometer 
-
-Connections:
-*/
-
 #include <avr/io.h>
 #include <util/delay.h>
 #include <string.h>

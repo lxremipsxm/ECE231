@@ -8,7 +8,7 @@
 
 int main(void){
 
-    char s[10] = "Balls";
+    char s[10] = "8=====D";
     OLED_Init();
 
 

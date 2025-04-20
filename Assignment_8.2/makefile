@@ -1,6 +1,6 @@
 SERIALPORT = com4
 # Specify the name of your source code here:
-SOURCEFILE = oled_test.c SSD1306.c i2c.c
+SOURCEFILE = lab8_2.c SSD1306.c i2c.c my_uart_lib.c my_adc_lib.c
 #_____________________________________________________________________
 # Don't change anything below unless you know what you're doing....
 CLOCKSPEED = 16000000	
