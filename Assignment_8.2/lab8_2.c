@@ -33,9 +33,12 @@ int main(void){
 
         digiValue = get_adc();
 
+        float voltage_reading = (digiValue/1023.0) * 5.0; //conversion to voltage from analog
         
-        float temp_c = (((digiValue/1023.0) * 5.0)-0.5)*100 ; //scaling to convert to celsius, 10mV/C
-        float temp_f = (temp_c * 9/5) + 32;
+        float temp_c = (voltage_reading-0.75)*100+25; //scaling to convert to celsius, 10mV/C, 750mV offset
+
+
+        float temp_f = (temp_c * 9.0/5.0) + 32.0;
 
         OLED_GoToLine(1);
         OLED_DisplayString("Temperature");
