@@ -19,19 +19,9 @@ int main(void){
 
     uart_init();
     adc_init(); //default channel (PC0)
-    int c_flag = 1; //celsius flag (supposed to represent bool)
     float too_hot = 80; //"too hot" indicator in F
 
     while(1){
-
-        //toggle celsius flag
-        if (c_flag == 1 && !(PINC & (1<<PC1))){
-            c_flag = 0; 
-        }
-        
-        else if (c_flag == 0 && !(PINC & (1<<PC1))){
-            c_flag = 1;
-        }
 
         digiValue = get_adc();
 
@@ -51,7 +41,17 @@ int main(void){
         char output[32];
         char temp_str[10];
 
-        if (c_flag == 1) {
+        if (PINC & (1<<PC1)) {
+            
+            dtostrf(temp_f, 4,1, temp_str);
+            sprintf(output, "Temperature: %s F", temp_str);
+            
+            OLED_GoToLine(5);    
+            OLED_DisplayString(temp_str);
+            OLED_DisplayString(" F");
+        }
+
+        else {
             
             dtostrf(temp_c, 4,1, temp_str);
             sprintf(output, "Temperature: %s C", temp_str);
@@ -60,16 +60,6 @@ int main(void){
             OLED_DisplayString(temp_str);
             OLED_DisplayString(" C");
 
-        }
-
-        else {
-            
-            dtostrf(temp_f, 4,1, temp_str);
-            sprintf(output, "Temperature: %s F", temp_str);
-            
-            OLED_GoToLine(5);    
-            OLED_DisplayString(temp_str);
-            OLED_DisplayString(" F");
 
         }
 
