@@ -15,10 +15,12 @@ int main(void){
     unsigned int digiValue;
     DDRC = 0x00; //make port c all input 
     PORTC |= (1<<PC1); //enable pull up on button pin PC1
+    DDRB = 0xFF; //for led
 
     uart_init();
     adc_init(); //default channel (PC0)
     int c_flag = 1; //celsius flag (supposed to represent bool)
+    float too_hot = 80; //"too hot" indicator in F
 
     while(1){
 
@@ -69,6 +71,14 @@ int main(void){
             OLED_DisplayString(temp_str);
             OLED_DisplayString(" F");
 
+        }
+
+        if (temp_f >= too_hot){
+
+            PORTB |= (1<<PB3);
+        }
+        else {
+            PORTB &= ~(1<<PB3); 
         }
 
         send_string(output);
