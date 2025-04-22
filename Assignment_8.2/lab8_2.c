@@ -1,3 +1,21 @@
+/* 
+Siddharth Vasudevan, ECE231 SP25 Lab 8.2
+lab8_2.c
+4/22/2025
+
+Description: ATmega takes input from a TMP36 sensor, reads it using an ADC, performs conversions with a button,
+then displays the information both through the serial port and an OLED. A "too hot" LED indicates if 
+the temperature exceeds a preset maximum value.
+
+Connections:
+PB3 - Physical Pin D11 - LED
+SCL, SDA - OLED
+PC0 - Physical Pin A0 - ADC/TMP36
+PC1 - Physical Pin A1 - Button
+
+*/
+
+
 #include <avr/io.h>
 #include <stdlib.h>
 #include <util/delay.h>
@@ -59,7 +77,6 @@ int main(void){
             OLED_GoToLine(5);    
             OLED_DisplayString(temp_str);
             OLED_DisplayString(" C");
-
 
         }
 
