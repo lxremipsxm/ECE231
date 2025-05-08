@@ -1,6 +1,6 @@
 SERIALPORT = com4
 # Specify the name of your source code here:
-SOURCEFILE = seven_led.c 
+SOURCEFILE = lab8_3.c 
 #_____________________________________________________________________
 # Don't change anything below unless you know what you're doing....
 CLOCKSPEED = 16000000	
